@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="permRcWriteExternalStorageExplain">This app needs permission to write to external storage for saving files.</string>
+</resources>
