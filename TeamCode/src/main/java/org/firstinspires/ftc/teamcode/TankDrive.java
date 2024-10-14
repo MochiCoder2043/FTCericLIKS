@@ -11,8 +11,8 @@ public class TankDrive extends OpMode {
     // Wheels
     private DcMotor leftMotor;
     private DcMotor rightMotor;
-    //private DcMotor frontLeftMotor;
-    //private  DcMotor frontRightMotor;
+    private DcMotor frontLeftMotor;
+    private  DcMotor frontRightMotor;
 
     private DcMotor claw;
 
@@ -20,8 +20,8 @@ public class TankDrive extends OpMode {
     public void init() {
         leftMotor = hardwareMap.get(DcMotor.class, "leftMotor");
         rightMotor = hardwareMap.get(DcMotor.class, "rightMotor");
-        //frontLeftMotor = hardwareMap.get(DcMotor.class, "frontLeft");
-        //frontRightMotor = hardwareMap.get(DcMotor.class, "frontright");
+        frontLeftMotor = hardwareMap.get(DcMotor.class, "frontLeft");
+        frontRightMotor = hardwareMap.get(DcMotor.class, "frontright");
 
         claw = hardwareMap.get(DcMotor.class, "claw");
 
@@ -47,6 +47,8 @@ public class TankDrive extends OpMode {
 
         leftMotor.setPower(wheelPower);
         rightMotor.setPower(wheelPower);
+        frontLeftMotor.setPower(wheelPower);
+        frontRightMotor.setPower(wheelPower);
 
         /* checkando si el robot se mueve cangrejo o no
         if (slidePower == 0){
