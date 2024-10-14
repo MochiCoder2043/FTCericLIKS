@@ -11,8 +11,8 @@ public class TankDrive extends OpMode {
     // Wheels
     private DcMotor leftMotor;
     private DcMotor rightMotor;
-    private DcMotor frontLeftMotor;
-    private  DcMotor frontRightMotor;
+    //private DcMotor frontLeftMotor;
+    //private  DcMotor frontRightMotor;
 
     private DcMotor claw;
 
@@ -20,8 +20,8 @@ public class TankDrive extends OpMode {
     public void init() {
         leftMotor = hardwareMap.get(DcMotor.class, "leftMotor");
         rightMotor = hardwareMap.get(DcMotor.class, "rightMotor");
-        frontLeftMotor = hardwareMap.get(DcMotor.class, "frontLeft");
-        frontRightMotor = hardwareMap.get(DcMotor.class, "frontright");
+        //frontLeftMotor = hardwareMap.get(DcMotor.class, "frontLeft");
+        //frontRightMotor = hardwareMap.get(DcMotor.class, "frontright");
 
         claw = hardwareMap.get(DcMotor.class, "claw");
 
@@ -34,7 +34,7 @@ public class TankDrive extends OpMode {
         double wheelPower = -gamepad1.left_stick_y;
 
         // declarando la variable para la velocidad del movimiento cangrejo
-        double slidePower = -gamepad1.left_stick_x;
+        //double slidePower = -gamepad1.left_stick_x;
 
         // checando si esta precionado el boton de la garra
         if (gamepad1.a){
@@ -45,7 +45,10 @@ public class TankDrive extends OpMode {
             claw.setPower(-8.0);
         }
 
-        // checkando si el robot se mueve cangrejo o no
+        leftMotor.setPower(wheelPower);
+        rightMotor.setPower(wheelPower);
+
+        /* checkando si el robot se mueve cangrejo o no
         if (slidePower == 0){
             // ir hacia enfrente
             leftMotor.setPower(wheelPower);
@@ -56,6 +59,8 @@ public class TankDrive extends OpMode {
             rightMotor.setPower(slidePower);
             frontRightMotor.setPower(-slidePower);
             frontLeftMotor.setPower(-slidePower);
-        }
+        }*/
+
+        // trying smthn
     }
 }
