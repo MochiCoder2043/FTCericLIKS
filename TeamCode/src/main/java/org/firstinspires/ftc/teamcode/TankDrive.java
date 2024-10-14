@@ -14,18 +14,19 @@ public class TankDrive extends OpMode {
     private DcMotor frontLeftMotor;
     private  DcMotor frontRightMotor;
 
-    private DcMotor claw;
+    //private DcMotor claw;
 
     @Override
     public void init() {
         leftMotor = hardwareMap.get(DcMotor.class, "leftMotor");
         rightMotor = hardwareMap.get(DcMotor.class, "rightMotor");
         frontLeftMotor = hardwareMap.get(DcMotor.class, "frontLeft");
-        frontRightMotor = hardwareMap.get(DcMotor.class, "frontright");
+        frontRightMotor = hardwareMap.get(DcMotor.class, "frontRight");
 
-        claw = hardwareMap.get(DcMotor.class, "claw");
+        //claw = hardwareMap.get(DcMotor.class, "claw");
 
         leftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        frontLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
     }
     //test
     @Override
@@ -33,7 +34,7 @@ public class TankDrive extends OpMode {
         // declarando la variable para la velocidad del movimiento hacia enfrente
         double wheelPower = -gamepad1.left_stick_y;
 
-        // declarando la variable para la velocidad del movimiento cangrejo
+        /* declarando la variable para la velocidad del movimiento cangrejo
         //double slidePower = -gamepad1.left_stick_x;
 
         // checando si esta precionado el boton de la garra
@@ -43,7 +44,7 @@ public class TankDrive extends OpMode {
         } else if (gamepad1.y) {
             // checkando si es para abajo el movimient (boton b)
             claw.setPower(-8.0);
-        }
+        }*/
 
         leftMotor.setPower(wheelPower);
         rightMotor.setPower(wheelPower);
