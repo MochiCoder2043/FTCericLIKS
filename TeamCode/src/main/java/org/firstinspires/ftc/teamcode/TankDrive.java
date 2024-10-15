@@ -12,58 +12,91 @@ public class TankDrive extends OpMode {
     private DcMotor leftMotor;
     private DcMotor rightMotor;
     private DcMotor frontLeftMotor;
-    private  DcMotor frontRightMotor;
+    private DcMotor frontRightMotor;
 
+    // Claw mechanism (optional)
     //private DcMotor claw;
 
     @Override
     public void init() {
+        // Initialize motors from hardware map
         leftMotor = hardwareMap.get(DcMotor.class, "leftMotor");
         rightMotor = hardwareMap.get(DcMotor.class, "rightMotor");
         frontLeftMotor = hardwareMap.get(DcMotor.class, "frontLeft");
         frontRightMotor = hardwareMap.get(DcMotor.class, "frontRight");
 
+        // Initialize claw motor (optional)
         //claw = hardwareMap.get(DcMotor.class, "claw");
 
-        leftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        frontLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        // Reverse left motors to account for opposite side orientation
+        //leftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        //frontLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
     }
-    //test
+
     @Override
     public void loop() {
-        // declarando la variable para la velocidad del movimiento hacia enfrente
-        double wheelPower = -gamepad1.left_stick_y;
+        // Get joystick inputs
+        double forwardPower = -gamepad1.left_stick_y;  // Forward/backward movement
+        double strafePower = gamepad1.left_stick_x;    // Strafing (left/right movement)
+        double turnPower = gamepad1.right_stick_x;     // Turning (rotation in place)
 
-        /* declarando la variable para la velocidad del movimiento cangrejo
-        //double slidePower = -gamepad1.left_stick_x;
+        // Apply scaling for smoother control (cubic scaling to reduce sensitivity at lower speeds)
+        forwardPower = scaleInput(forwardPower);
+        strafePower = scaleInput(strafePower);
+        turnPower = scaleInput(turnPower);
 
-        // checando si esta precionado el boton de la garra
-        if (gamepad1.a){
-            // checkando si es para arriba el movimient (boton a)
-            claw.setPower(8.0);
-        } else if (gamepad1.y) {
-            // checkando si es para abajo el movimient (boton b)
-            claw.setPower(-8.0);
-        }*/
+        // Calculate motor power for mecanum/tank drive
+        double leftFrontPower = forwardPower - strafePower + turnPower;
+        double rightFrontPower = forwardPower - strafePower - turnPower;
+        double leftBackPower = forwardPower + strafePower + turnPower;
+        double rightBackPower = forwardPower + strafePower - turnPower;
 
-        leftMotor.setPower(wheelPower);
-        rightMotor.setPower(wheelPower);
-        frontLeftMotor.setPower(wheelPower);
-        frontRightMotor.setPower(wheelPower);
 
-        /* checkando si el robot se mueve cangrejo o no
-        if (slidePower == 0){
-            // ir hacia enfrente
-            leftMotor.setPower(wheelPower);
-            rightMotor.setPower(wheelPower);
-        } else if (slidePower != 0) {
-            // CANGREJO
-            leftMotor.setPower(slidePower);
-            rightMotor.setPower(slidePower);
-            frontRightMotor.setPower(-slidePower);
-            frontLeftMotor.setPower(-slidePower);
-        }*/
 
-        // trying smthn
+        // Normalize the values so no motor power exceeds 1.0
+        double maxPower = Math.max(1.0, Math.abs(leftFrontPower));
+        maxPower = Math.max(maxPower, Math.abs(rightFrontPower));
+        maxPower = Math.max(maxPower, Math.abs(leftBackPower));
+        maxPower = Math.max(maxPower, Math.abs(rightBackPower));
+
+        leftFrontPower /= maxPower;
+        rightFrontPower /= maxPower;
+        leftBackPower /= maxPower;
+        rightBackPower /= maxPower;
+
+        // Set motor powers
+        leftMotor.setPower(-leftBackPower);
+        rightMotor.setPower(rightBackPower);
+        frontLeftMotor.setPower(-leftFrontPower);
+        frontRightMotor.setPower(rightFrontPower);
+
+        /* Claw control (optional)
+        if (claw != null) {
+            if (gamepad1.a) {
+                claw.setPower(0.5);  // Open claw
+            } else if (gamepad1.y) {
+                claw.setPower(-0.5); // Close claw
+            } else {
+                claw.setPower(0);    // Stop claw
+            }
+        } */
+
+        // Send telemetry data to the driver station for debugging
+        telemetry.addData("Left Front Power", leftFrontPower);
+        telemetry.addData("Right Front Power", rightFrontPower);
+        telemetry.addData("Left Back Power", leftBackPower);
+        telemetry.addData("Right Back Power", rightBackPower);
+        telemetry.update();
+    }
+
+    /**
+     * Scales joystick input to make control more sensitive at low speeds.
+     * Uses cubic scaling.
+     *
+     * @param input The raw joystick input (-1.0 to 1.0)
+     * @return The scaled input value
+     */
+    private double scaleInput(double input) {
+        return Math.pow(input, 3);
     }
 }
